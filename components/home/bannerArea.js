@@ -46,13 +46,13 @@ function BannerArea({description, data}) {
           <div className="relative w-full lg:max-w-[90%] font-karla">
             <div className="absolute bottom-0 gap-1.5 grid w-[38%] ml-5">
               <h1 className="mb-2 font-extrabold font-outfit text-4xl uppercase line-clamp-2">{data.title.english || data.title.romaji}</h1>
-            //  {anifyDatas ? (
-            //    <DotList items={anifyDatas}/>
-            //   ): (
-            //      <DotList items="Loading"/>
-            //    )}
+             {anifyDatas ? (
+                <DotList items={anifyDatas}/>
+             ): (
+                <DotList items="Loading"/>
+             )}
               <p className="line-clamp-3 text-sm font-normal text-white/40" dangerouslySetInnerHTML={{ __html: data?.description }}/>
-             // <DotList items={data.genres}/>
+            <DotList items={data.genres}/>
               <div className="relative mt-2 gap-2 flex">
                 <Link href={`/en/anime/${data.id}`}>
                   <button className="bg-secondary px-5 py-2 text-sm font-medium rounded-sm">Watch Now</button>
