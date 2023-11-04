@@ -296,7 +296,7 @@ export default function Home({ detail, populars, upComing }) {
   useEffect(() => {
     function postData()
     {
-      axios.get('https://makima-mongo-api.vercel.app/save-data?table=home');
+      axios.get('https://mongoapi.vercel.app/save-data?table=home');
     }
     postData();
   },[])
