@@ -2,7 +2,7 @@ import ChapterSelector from "@/components/manga/chapters";
 import Footer from "@/components/shared/footer";
 import Head from "next/head";
 import { useEffect, useState } from "react";
-import { setCookie } from "nookies";
+//import { setCookie } from "nookies";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../api/auth/[...nextauth]";
 import { mediaInfoQuery } from "@/lib/graphql/query";
