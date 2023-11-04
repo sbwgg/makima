@@ -1,9 +1,14 @@
 import axios from "axios";
 import { rateLimitStrict, rateLimiterRedis, redis } from "@/lib/redis";
-import appendImagesToEpisodes from "@/utils/combineImages";
 import appendMetaToEpisodes from "@/utils/appendMetaToEpisodes";
 
-const CONSUMET_URI = process.env.API_URI;
+let CONSUMET_URI;
+
+CONSUMET_URI = process.env.API_URI;
+if (CONSUMET_URI.endsWith("/")) {
+  CONSUMET_URI = CONSUMET_URI.slice(0, -1);
+}
+
 const API_KEY = process.env.API_KEY;
 
 const isAscending = (data) => {
@@ -152,8 +157,13 @@ async function fetchCoverImage(id, available = false) {
 export default async function handler(req, res) {
   const { id, releasing = "false", dub = false, refresh = null } = req.query;
 
-  // if releasing is true then cache for 10 minutes, if it false cache for 1 month;
-  const cacheTime = releasing === "true" ? 60 * 10 : 60 * 60 * 24 * 30;
+  // if releasing is true then cache for 1 hour, if it false cache for 1 month;
+  let cacheTime = null;
+  if (releasing === "true") {
+    cacheTime = 60 * 60; // 1 hour
+  } else if (releasing === "false") {
+    cacheTime = 60 * 60 * 24 * 30; // 1 month
+  }
 
   let cached;
   let meta;
@@ -232,9 +242,7 @@ export default async function handler(req, res) {
     if (meta) {
       data = await appendMetaToEpisodes(filteredData, JSON.parse(meta));
     } else if (cover && !cover.some((e) => e.img === null)) {
-      if(redis){
-        await redis.set(`meta:${id}`, JSON.stringify(cover));
-      }
+      if (redis) await redis.set(`meta:${id}`, JSON.stringify(cover));
       data = await appendMetaToEpisodes(filteredData, cover);
     }
 

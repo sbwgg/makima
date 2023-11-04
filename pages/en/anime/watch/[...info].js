@@ -17,8 +17,6 @@ import BugReportForm from "@/components/shared/bugReport";
 import Skeleton from "react-loading-skeleton";
 import Head from "next/head";
 
-import axios from "axios";
-
 export async function getServerSideProps(context) {
   let userData = null;
   const session = await getServerSession(context.req, context.res, authOptions);
@@ -31,7 +29,11 @@ export async function getServerSideProps(context) {
     };
   }
 
-  const proxy = process.env.PROXY_URI;
+  let proxy;
+  proxy = process.env.PROXY_URI;
+  if (proxy.endsWith("/")) {
+    proxy = proxy.slice(0, -1);
+  }
   const disqus = process.env.DISQUS_SHORTNAME;
 
   const [aniId, provider] = query?.info;
@@ -309,7 +311,7 @@ export default function Watch({
 
     mediaSession.metadata = new MediaMetadata({
       title: title,
-      artist: `Makima ${
+      artist: `Moopa ${
         title === info?.title?.romaji
           ? "- Episode " + epiNumber
           : `- ${info?.title?.romaji || info?.title?.english}`
@@ -323,7 +325,7 @@ export default function Watch({
       if (navigator.share) {
         await navigator.share({
           title: `Watch Now - ${info?.title?.english || info.title.romaji}`,
-          // text: `Watch [${info?.title?.romaji}] and more on Makima. Join us for endless anime entertainment"`,
+          // text: `Watch [${info?.title?.romaji}] and more on Moopa. Join us for endless anime entertainment"`,
           url: window.location.href,
         });
       } else {
@@ -345,16 +347,6 @@ export default function Watch({
     document.body.style.overflow = "auto";
   }
 
-  useEffect(() => {
-    function postData()
-    {
-      if(info){
-        axios.get(`https://makima-mongo-api.vercel.app/save-data?table=player&id=${info.title.romaji || info.title.english} Episode: ${epiNumber}`)
-      }
-    }
-    postData();
-  },[info])
-
   return (
     <>
       <Head>
@@ -362,9 +354,13 @@ export default function Watch({
           {episodeNavigation?.playing?.title ||
             `${info?.title?.romaji} - Episode ${epiNumber}`}
         </title>
-        {/* Write the best SEO for this watch page with data of anime title from info.title.romaji, episode title from episodeNavigation?.playing?.title, description from episodeNavigation?.playing?.description, episode number from epiNumber */}
+        <meta
+          name="title"
+          data-title-romaji={info?.title?.romaji}
+          data-title-english={info?.title?.english}
+          data-title-native={info?.title?.native}
+        />
         <meta name="twitter:card" content="summary_large_image" />
-        {/* Write the best SEO for this homepage */}
         <meta
           name="description"
           content={episodeNavigation?.playing?.description || info?.description}
@@ -391,7 +387,7 @@ export default function Watch({
           property="og:image"
           content={episodeNavigation?.playing?.img || info?.bannerImage}
         />
-        <meta property="og:site_name" content="Makima" />
+        <meta property="og:site_name" content="Moopa" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta
           name="twitter:image"
@@ -494,13 +490,13 @@ export default function Watch({
                           "Loading..."}
                       </Link>
                     </div>
-                    <p className="font-karla">
+                    <h3 className="font-karla">
                       {episodeNavigation?.playing?.number ? (
                         `Episode ${episodeNavigation?.playing?.number}`
                       ) : (
                         <Skeleton width={120} height={16} />
                       )}
-                    </p>
+                    </h3>
                   </div>
                   <div>
                     <div className="flex gap-2 text-sm">
