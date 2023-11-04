@@ -30,7 +30,7 @@ function BannerArea({description, data}) {
     console.log(anifyDatas)
 
     return (
-        <div className="hidden justify-center lg:flex h-[400px]">
+        <div className=" justify-center lg:flex h-[400px]">
           <div className="absolute">
             <Image
               draggable={false}
