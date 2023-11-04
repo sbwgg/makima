@@ -33,9 +33,7 @@ export async function getServerSideProps(context) {
 
   const { search, format, genres, season, year } = context.query;
 
-  let getFormat;
-  let getSeason;
-  let getYear;
+  let getFormat, getSeason, getYear;
   let getGenres = [];
 
   if (genres) {
@@ -93,7 +91,6 @@ export default function Card({
 }) {
   const inputRef = useRef(null);
   const router = useRouter();
-  // const { data: session } = useSession();
 
   const [data, setData] = useState();
   const [imageSearch, setImageSearch] = useState();
@@ -129,6 +126,7 @@ export default function Card({
     });
     if (data?.media?.length === 0) {
       setNextPage(false);
+      setLoading(false);
     } else if (data !== null && page > 1) {
       setData((prevData) => {
         return [...(prevData ?? []), ...data?.media];
@@ -225,10 +223,12 @@ export default function Card({
     setImageSearch(updatedImageSearch);
   };
 
+  // console.log({ loading, data });
+
   return (
     <>
       <Head>
-        <title>Makima - search</title>
+        <title>Moopa - search</title>
         <meta name="title" content="Search" />
         <meta name="description" content="Search your favourites Anime/Manga" />
         <link rel="icon" href="/svg/c.svg" />
@@ -375,15 +375,19 @@ export default function Card({
             >
               {loading
                 ? ""
-                : !data?.length && (
-                    <div className="w-screen text-[#ff7f57] xl:col-start-3 col-start-2 items-center flex justify-center text-center font-bold font-karla xl:text-2xl">
+                : !data && (
+                    <div className="w-full text-[#ff7f57] col-span-6 items-center flex justify-center text-center font-bold font-karla xl:text-2xl">
                       Oops!<br></br> Nothing's Found...
                     </div>
                   )}
 
               {data &&
+                data?.length > 0 &&
                 !imageSearch &&
                 data?.map((anime, index) => {
+                  const anilistId = anime?.mappings?.find(
+                    (x) => x.providerId === "anilist"
+                  )?.id;
                   return (
                     <m.div
                       initial={{ scale: 0.98 }}
@@ -394,7 +398,9 @@ export default function Card({
                       <Link
                         href={
                           anime.format === "MANGA" || anime.format === "NOVEL"
-                            ? `/en/manga/${anime.id}`
+                            ? `/en/manga/${anilistId ? `${anilistId}/` : ""}${
+                                anime.id
+                              }`
                             : `/en/anime/${anime.id}`
                         }
                         title={anime.title.userPreferred}
@@ -413,7 +419,13 @@ export default function Card({
                         />
                       </Link>
                       <Link
-                        href={`/en/anime/${anime.id}`}
+                        href={
+                          anime.format === "MANGA" || anime.format === "NOVEL"
+                            ? `/en/manga/${anilistId ? `${anilistId}/` : ""}${
+                                anime.id
+                              }`
+                            : `/en/anime/${anime.id}`
+                        }
                         title={anime.title.userPreferred}
                       >
                         <h1 className="font-outfit font-bold xl:text-base text-[15px] pt-4 line-clamp-2">
