@@ -1,7 +1,6 @@
 import Head from "next/head";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-// import { parseCookies } from "nookies";
 import Image from "next/image";
 import Footer from "@/components/shared/footer";
 
