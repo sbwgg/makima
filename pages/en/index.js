@@ -206,10 +206,10 @@ export default function Home({ detail, populars, upComing }) {
                 console.log("server error");
                 break;
               }
-              default: {
-                console.log("unknown error");
-                break;
-              }
+            //  default: {
+            //    console.log("unknown error");
+           //     break;
+           //   }
             }
           } else {
             data = await res.json();
