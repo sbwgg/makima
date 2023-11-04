@@ -362,7 +362,7 @@ export default function Home({ detail, populars, upComing }) {
               {getGreetings() && (
                 <>
                   {getGreetings()},
-                  <h1 className="lg:hidden">{sessions?.user.name}</h1>
+                  <h1 className="lg:flex">{sessions?.user.name}</h1>
                 </>
               )}
               <button
